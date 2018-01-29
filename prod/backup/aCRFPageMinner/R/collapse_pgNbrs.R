@@ -1,13 +1,3 @@
-#' The program collapse page numbers that belong to the same family (wrt Dataset and Variable columns). 
-#'
-#' @param dsin The preprocessed dataset with all page numbers for each domain extracted from aCRF file.
-#' @param domain_list List of SDTM domains read from aCRF.
-#'
-#'
-#' @author Hailemichael M. Worku (aka, Haile). Email: <hailemichael.worku@ocs-consulting.com>
-#'
-#'
-
 
 collapse_pgNbrs <- function(dsin = NULL, domain_list = NULL) {
   

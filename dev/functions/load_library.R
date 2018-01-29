@@ -5,3 +5,5 @@ library(tidyr)        ## for unnesting
 library(magrittr)     ## to use pipe operator
 library(purrr)        ## to convert multiple variables type from factor to character
 library(plyr)         ## to sort dataframe, both ascending and descending
+library(tidyselect)   ## pkg::compareDF is dependent on this package
+library(compareDF)    ## to compare two dataframe

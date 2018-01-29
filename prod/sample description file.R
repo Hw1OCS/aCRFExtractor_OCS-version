@@ -1,0 +1,14 @@
+# Package: aCRFPageMinner
+# Type: Package
+# Title: Extracts page numbers of SDTM variables available in manually created aCRF file. The output is used for creation of Define XML file.
+# Version: 0.1.0
+# Author: Hailemichael M. Worku (aka, Haile)
+# Maintainer: The package maintainer <hailemichael.worku@ocs-consulting.com>
+# Remotes: github::hadley/devtools, github::tidyverse/tidyr, github::tidyverse/readr
+# Dependence: R (>= 3.3.3), pacman, pdftools, readxl, stringr, tidyr, magrittr, purrr, plyr, tidyselect, compareDF, dplyr, readr
+# Imports: devtools, pacman, pdftools, readxl, stringr, tidyr, magrittr, purrr, plyr, tidyselect, compareDF, dplyr, readr
+# Description: The aCRFPageMinner package takes the following input files: 1. study number (studyId); 2. aCRF pdf file; and, 3. Define Origin draft file (xlsx). It returns a CSV file with the page numbers for each domain.
+# License: OCS Consulting BV, The Netherlands
+# Encoding: UTF-8
+# LazyData: true
+# RoxygenNote: 6.0.1
