@@ -72,7 +72,8 @@ get_valueLevel_pgNbr <- function (crf_pageIn = NULL,
       ## e.g., RTRINIT in SUPPQS (however, the actual domain in the dataset is SUPPQSMM, see sample aCRF, pp 13/22)
       ## e.g., RACE1, RACE2, etc (see sample aCRF, pp 6/22)
       # query1 <- paste("(", last_string, ")(\\=\\w+)?(\\w+\\,\\s+)?\\s+(in)\\s+(", "(SUPP)\\w+", ")", sep = "")                                                                                             
-      query1 <- paste("(", last_string, ")(\\=\\w+)?(\\w+\\,\\s+)?\\s+(in)\\s+(", "(SUPP)\\w+", ")", sep = "")                                                                                             
+      query1 <- paste("(", last_string, ")(\\=\\w+)?(\\,\\s+\\w+\\,\\s+\\w+\\.)?\\s+(in)\\s+(", "(SUPP)\\w+", ")", sep = "")     
+      # (RACE1)(\\=\\w+)?(\\,\\s+\\w+\\,\\s+\\w+\\.)?\\s+(in)\\s+((SUPP)\\w+)
     } 
     else {
       ## e.g., PEORRES when PETESTCD=PE01 (see sample aCRF, pp 10/22)
