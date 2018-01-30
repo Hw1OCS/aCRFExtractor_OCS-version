@@ -1,0 +1,26 @@
+[[1]]
+# A tibble: 17 x 5
+   Pages chng_type Order Dataset Variable
+   <chr> <chr>     <chr> <chr>   <chr>   
+ 1 14    -         18    QSCS    QSEVLINT
+ 2 14 15 -         8     QSCS    QSSCAT  
+ 3 17    -         6     QSCG    QSTEST  
+ 4 17    -         7     QSCG    QSCAT   
+ 5 17    -         9     QSCG    QSORRES 
+ 6 17    -         16    QSCG    QSDTC   
+ 7 17    -         6     QSCS    QSTEST  
+ 8 17    -         7     QSCS    QSCAT   
+ 9 17    -         9     QSCS    QSORRES 
+10 17    -         16    QSCS    QSDTC   
+11 17    -         6     QSMM    QSTEST  
+12 17    -         7     QSMM    QSCAT   
+13 17    -         9     QSMM    QSORRES 
+14 17    -         16    QSMM    QSDTC   
+15 4 5   -         4     TI      IETEST  
+16 4 5   -         5     TI      IECAT   
+17 6     -         6     SC      SCTEST  
+
+[[2]]
+                              old_obs new_obs changes additions removals
+res_comparison$change_summary      75      58       0         0       17
+
