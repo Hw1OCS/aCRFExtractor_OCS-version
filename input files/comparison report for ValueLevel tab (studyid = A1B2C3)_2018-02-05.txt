@@ -1,0 +1,13 @@
+[[1]]
+# A tibble: 4 x 6
+  Pages chng_type Order Dataset Variable WhereClause                     
+  <chr> <chr>     <chr> <chr>   <chr>    <chr>                           
+1 15    -         16    QSMM    QSORRES  QSMM.QSTESTCD.EQ.CSDD15-55c71fcf
+2 6     -         3     SUPPDM  QVAL     SUPPDM.QNAM.EQ.RACE3-ec8f90bc   
+3 <NA>  +         16    QSMM    QSORRES  QSMM.QSTESTCD.EQ.CSDD15-55c71fcf
+4 <NA>  +         3     SUPPDM  QVAL     SUPPDM.QNAM.EQ.RACE3-ec8f90bc   
+
+[[2]]
+                              old_obs new_obs changes additions removals
+res_comparison$change_summary      70      70       0         2        2
+

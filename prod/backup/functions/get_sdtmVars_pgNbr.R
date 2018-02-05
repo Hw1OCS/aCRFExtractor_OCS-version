@@ -1,3 +1,16 @@
+#' This is the main program which does the page extraction from aCRF page. 
+#'
+#' @param crf_pageIn The preprocessed dataset with all text read from aCRF using pkg::pdftools.
+#' @param defineOrigin_variableTab The preprocessed dataset with define origin info.
+#' @param domain_list List of SDTM domains read from aCRF.
+#' @param until_pgNbr Included for debugging purpose.
+#'
+#'
+#' @author Hailemichael M. Worku (aka, Haile). Email: <hailemichael.worku@ocs-consulting.com>
+#'
+#'
+
+
 get_sdtmVars_pgNbr <- function (crf_pageIn = NULL,
                                 defineOrigin_variableTab = NULL, 
                                 domain_list = NULL, 

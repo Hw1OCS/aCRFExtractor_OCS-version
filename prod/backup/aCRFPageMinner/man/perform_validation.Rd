@@ -5,14 +5,16 @@
 \title{The program performs validation test for us by comparing two files, i.e., a file with manually created page numbers against the one created by the program (pkg:aCRFPageMinner).}
 \usage{
 perform_validation(filename_manualPages = NULL, tabsheet_manualPages = NULL,
-  filename_machinePages = NULL)
+  filename_machinePages = NULL, compOut_dir = NULL)
 }
 \arguments{
 \item{filename_manualPages}{The filename of the manually created (an MS Excel) file.}
 
 \item{tabsheet_manualPages}{The tabsheet of the manually created (an MS Excel) file.}
 
-\item{filename_machinePages}{The filename of the machine created (a CSV) file.#'}
+\item{filename_machinePages}{The filename of the machine created (a CSV) file.}
+
+\item{compOut_dir}{The directory name for storing the comparison report.}
 }
 \description{
 The program assumes that an MS Excel file for manually created file, and a CSV file for the machine created file.

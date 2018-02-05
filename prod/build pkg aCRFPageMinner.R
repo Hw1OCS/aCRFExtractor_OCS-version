@@ -1,7 +1,7 @@
 
 
 ## IMPORTANT
-## - comment out SOURCE() function
+## - comment out or remove SOURCE() function
 
 
 

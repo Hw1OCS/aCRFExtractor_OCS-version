@@ -2,7 +2,7 @@
 % Please edit documentation in R/aCRFPageMinner_main.R
 \name{run_aCRFPageMinner}
 \alias{run_aCRFPageMinner}
-\title{Extracts page numbers of SDTM variables available in manually created aCRF file. The output is used for 
+\title{Extracts page numbers of SDTM variables available in manually created aCRF file. The output is used for
 creation of Define XML file.}
 \usage{
 run_aCRFPageMinner()

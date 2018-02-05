@@ -1,4 +1,4 @@
-#' This is the main program which does the page extraction from aCRF page. 
+#' This is the main program which does the page extraction from aCRF page, related to Variable Tab. 
 #'
 #' @param crf_pageIn The preprocessed dataset with all text read from aCRF using pkg::pdftools.
 #' @param defineOrigin_variableTab The preprocessed dataset with define origin info.
@@ -16,7 +16,7 @@ get_sdtmVars_pgNbr <- function (crf_pageIn = NULL,
                                 domain_list = NULL, 
                                 until_pgNbr = NULL) {
   
-  message("Page extraction from aCRF is just stared: ", date())
+  message("Extracting page numbers for Variable tab...")
   
   ## get total number of CRF pages
   if (!is.null(until_pgNbr)) {
@@ -32,7 +32,13 @@ get_sdtmVars_pgNbr <- function (crf_pageIn = NULL,
   crf_out <- data.frame(a = numeric(), b = character(), c = character())
   # crf_out_strangeAll <- data.frame(a = numeric(), b = character(), c = character(), d = character())
   
-  ## get SDTM vars and corresponding page number
+  ####################################################
+  ## get SDTM vars and corresponding page number.   ##
+  ####################################################
+  # ## Set progress bar
+  # pb <- txtProgressBar(min = 1, max = length(domain_list), style = 3)
+  # count <- 0
+  
   for (domain in domain_list) {
     print(domain)
     
@@ -114,7 +120,13 @@ get_sdtmVars_pgNbr <- function (crf_pageIn = NULL,
     
     crf_out <- crf_out %>%
       dplyr::filter(!sdtm_vars %in% c(vars_unwanted))
+    
+    # # update progress bar
+    # setTxtProgressBar(pb, count+1)
   }
+  
+  # ## Close progress bar
+  # close(pb)
   
   return(crf_out)
 }

@@ -23,7 +23,7 @@ collapse_pgNbrs <- function(dsin = NULL, domain_list = NULL) {
     
     ## Collapse page numbers per domain and variable
     ds_final <- ds_flt %>%
-      dplyr::group_by(Dataset, Variable, Order) %>%
+      dplyr::group_by(Dataset, Variable, Order, Origin) %>%
       dplyr::summarise(Pages = paste(page_nbr, collapse = " ")) %>%    ## use space as a delimitor / separator for the collapse
       dplyr::arrange(Order)
     

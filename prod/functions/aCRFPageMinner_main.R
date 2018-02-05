@@ -110,55 +110,77 @@ run_aCRFPageMinner <- function() {
   # defOrig_fileName <- "./input files/Define specs CDISC SDTM completed_without page numbers.xlsx"
   # assign(x = "defOrig_fileName", value = file.choose(), envir = .GlobalEnv)
   
+  ## Read Variables tab of Define specs file.
   sheetVarTab_name <- "Variables"
-  
   defineOrigin_variableTab <- readxl::read_excel(path = file.path(defOrig_fileName), 
                                                  sheet = sheetVarTab_name, 
                                                  col_names = TRUE)
   
+  ## Read Value level tab of Define specs file.
+  sheetValueLevelTab_name <- "ValueLevel"
+  defineOrigin_valueLevelTab <- readxl::read_excel(path = file.path(defOrig_fileName), 
+                                                   sheet = sheetValueLevelTab_name, 
+                                                   col_names = TRUE)
+  
   ## Set output destination
   assign(x = "output_dir", value = dirname(defOrig_fileName), envir = .GlobalEnv)
   
-  # ## load library
-  # source("./dev/functions/load_library.R")
-  # 
-  # ## load custom source codes
-  # source("./dev/functions/preprocess_crf_fn.R")
-  # source("./dev/functions/get_sdtmVars_pgNbr_fn.R")
-  # source("./dev/functions/collapse_pgNbrs.R")
-  # source("./dev/functions/perfom_validation.R")
+  ## load library
+  source("./dev/functions/load_library.R")
+  
+  ## load custom source codes
+  source("./dev/functions/preprocess_crf.R")
+  source("./dev/functions/get_sdtmVars_pgNbr.R")
+  source("./dev/functions/get_valueLevel_pgNbr.R")
+  source("./dev/functions/collapse_pgNbrs.R")
+  source("./dev/functions/perfom_validation.R")
   
   
   ## ------------------------------------------------------------- ##
   ## <!-- Step 2: Preprocess imported aCRF and Define specs.   --> ##
   ## ------------------------------------------------------------- ##
-  ## Preprocess aCRF data
+  ## -- Preprocess aCRF data
   crf_preprocess <- preprocess_crf(crf_txt_raw = crf_raw)
   
-  ## Preprocess Define specs data
+  ## -- Preprocess Variable tab dataset
   defineOrigin_variableTab_preprocess <- defineOrigin_variableTab %>%
     dplyr::select(Order, Dataset, Variable, Origin, Pages) %>%
     dplyr::filter(Origin %in% c("CRF"))
   
-  ## Get list of domains that was obtained in aCRF
+  ## Get list of domains that was obtained in aCRF from Variable Tab dataset
   domain_DefOrigin_VarTab_filtered <- defineOrigin_variableTab_preprocess %>%
     dplyr::distinct(Dataset) %>%
     dplyr::pull()
   
+  ## -- Preprocess Value level tab dataset
+  defineOrigin_valueLevelTab_preprocess <- defineOrigin_valueLevelTab %>%
+    dplyr::select(Order, Dataset, Variable, "Where Clause", Origin, Pages) %>%
+    dplyr::filter(Origin %in% c("CRF"))
   
-  ## ---------------------------------------- ##
-  ## <!-- Step 3: Extract page numbers.   --> ##
-  ## ---------------------------------------- ##
+  ## remove spaces from column names
+  names(defineOrigin_valueLevelTab_preprocess) <- names(defineOrigin_valueLevelTab_preprocess) %>%
+    stringr::str_replace_all(pattern = "\\s+", replacement = "")
+  
+  ## ------------------------------------------------------------------ ##
+  ## <!-- Step 3a: Extract page numbers from Variable Tab dataset.  --> ##
+  ## ------------------------------------------------------------------ ##
+  message("pkg::aCRFPageMinner started extracting page numbers for both tabs: ", date())
+  
   crf_out_varTab <- get_sdtmVars_pgNbr(crf_pageIn = crf_preprocess, 
                                        defineOrigin_variableTab = defineOrigin_variableTab_preprocess,
                                        domain_list = domain_DefOrigin_VarTab_filtered)
   
   
+  ## ---------------------------------------------------------------------- ##
+  ## <!-- Step 3b: Extract page numbers from Value level Tab dataset.   --> ##
+  ## ---------------------------------------------------------------------- ##
+  crf_out_valueLevelTab <- get_valueLevel_pgNbr(crf_pageIn = crf_preprocess, 
+                                                defineOrigin_valueLevelTab = defineOrigin_valueLevelTab_preprocess)
+  
+  
   ## ---------------------------------------------------- ##
   ## <!-- Step 4: Create output dataset for export.   --> ##
   ## ---------------------------------------------------- ##
-  
-  
   
   ######################################################
   ## Get Order variable generated from Pinnacle 21.   ##
@@ -166,10 +188,10 @@ run_aCRFPageMinner <- function() {
   ######################################################
   # defineOrigin_variableTab_Order <- defineOrigin_variableTab %>%
   defineOrigin_variableTab_Order <- defineOrigin_variableTab_preprocess %>%
-    dplyr::select(Order, Dataset, Variable) %>%
+    dplyr::select(Order, Dataset, Variable, Origin) %>%
     dplyr::rename(tmp_Order = Order) %>%
     dplyr::mutate(Order = as.numeric(tmp_Order)) %>%
-    dplyr::select(Order, Dataset, Variable)
+    dplyr::select(Order, Dataset, Variable, Origin)
   
   # crf_out_varTab_collapsed_rename <- crf_out_varTab_collapsed_mdf %>%
   crf_out_varTab_order <- crf_out_varTab %>%
@@ -189,30 +211,32 @@ run_aCRFPageMinner <- function() {
   crf_out_varTab_collapsed <- collapse_pgNbrs(dsin = crf_out_varTab_order_merged, 
                                               domain_list = domain_DefOrigin_VarTab_filtered)
   
-  ## Get final output dataset
+  ###############################################
+  ## Export final dataset for Variable Tab.    ##
+  ###############################################
+  ## Reorder columns, bring Order column to first column
   crf_out_varTab_final <- crf_out_varTab_collapsed %>%
-    dplyr::select(Order, Dataset, Variable, Pages)              ## rearrange columns, i.e., bring Order to the first column
+    dplyr::select(Order, Dataset, Variable, Origin, Pages)
   
-  ## export final dataset
-  # filename_out <- file.path(paste("./../../../04 Output/page numbers for Variables tab_", Sys.Date(), ".csv", sep = ""))
-  tmp_filename <- paste("page numbers for Variables tab (studyid = ", studyid, ")_", Sys.Date(), ".csv", sep = "")
-  filename_out <- file.path(output_dir, tmp_filename)
+  ## export output file
+  tmp_fname_varTab <- paste("page numbers for Variable Tab (studyid = ", studyid, ")_", Sys.Date(), ".csv", sep = "")
+  fname_varTab_out <- file.path(output_dir, tmp_fname_varTab)
   
-  readr::write_csv(x = crf_out_varTab_collapsed, path = filename_out)
+  readr::write_csv(x = crf_out_varTab_final, path = fname_varTab_out)             ## rearrange columns, i.e., bring Order to the first column
+  
+  #################################################
+  ## Export final dataset for Value Level Tab.   ##
+  #################################################
+  tmp_fname_valueLevelTab <- paste("page numbers for Value Level Tab (studyid = ", studyid, ")_", Sys.Date(), ".csv", sep = "")
+  fname_valueLevel_out <- file.path(output_dir, tmp_fname_valueLevelTab)
+  
+  readr::write_csv(x = crf_out_valueLevelTab, path = fname_valueLevel_out)
   
   print("")
-  print("<!-- #################################################################################################  -->")
-  print(paste("To see the extracted page numbers from aCRF, please go to this path: ", filename_out, sep = ""))
-  print("<!-- #################################################################################################  -->")
-  
-  
-  #########################################################
-  ## Perform validation by comparison manually created   ##
-  ## page numbers and the one created by the program.    ##
-  #########################################################
-  # perform_validation(filename_manualPages = "./input files/Define specs CDISC SDTM completed - manually.xlsx", 
-  #                    tabsheet_manualPages = "Variables", 
-  #                    ds_machinePages = crf_out_varTab_final, compOut_dir = "../../../04 Output")
-  
-  
+  print("<!-- ##############################################################################  -->")
+  print(paste("To see extracted page numbers of aCRF, please follow the link below: "))
+  print(paste("## Variable Tab output file: ", fname_varTab_out, sep = ""))
+  print(paste("## Value Level Tab output file: ", fname_valueLevel_out, sep = ""))
+  print("<!-- ##############################################################################  -->")
+  print("")
 }

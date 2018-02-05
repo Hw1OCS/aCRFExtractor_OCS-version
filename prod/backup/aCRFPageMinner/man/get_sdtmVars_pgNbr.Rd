@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_sdtmVars_pgNbr.R
 \name{get_sdtmVars_pgNbr}
 \alias{get_sdtmVars_pgNbr}
-\title{This is the main program which does the page extraction from aCRF page, related to Variable Tab.}
+\title{This is the main program which does the page extraction from aCRF page.}
 \usage{
 get_sdtmVars_pgNbr(crf_pageIn = NULL, defineOrigin_variableTab = NULL,
   domain_list = NULL, until_pgNbr = NULL)
@@ -17,7 +17,7 @@ get_sdtmVars_pgNbr(crf_pageIn = NULL, defineOrigin_variableTab = NULL,
 \item{until_pgNbr}{Included for debugging purpose.}
 }
 \description{
-This is the main program which does the page extraction from aCRF page, related to Variable Tab.
+This is the main program which does the page extraction from aCRF page.
 }
 \author{
 Hailemichael M. Worku (aka, Haile). Email: <hailemichael.worku@ocs-consulting.com>

@@ -12,11 +12,18 @@ library(aCRFPageMinner)
 ###################################
 aCRFPageMinner::run_aCRFPageMinner()
 
+
 ########################################################################
 ## Perfom validation by comparing the file with manually created      ##
 ## page numbers against the one produced by the program.              ##
 ########################################################################
+
+## 1. Validate output for Variable Tab 
 aCRFPageMinner::perform_validation(filename_manualPages = "./input files/Define specs CDISC SDTM completed - manually.xlsx", 
                                    tabsheet_manualPages = "Variables", 
-                                   filename_machinePages = "./input files/page numbers for Variables tab (studyid = 999909)_2018-01-29.csv", 
-                                   compOut_dir = "./input files/")
+                                   filename_machinePages = "./input files/page numbers for Variable Tab (studyid = A1B2C3)_2018-02-05.csv")
+
+## 2. Validate output for ValueLevel Tab 
+aCRFPageMinner::perform_validation(filename_manualPages = "./input files/Define specs CDISC SDTM completed - manually.xlsx", 
+                                   tabsheet_manualPages = "ValueLevel", 
+                                   filename_machinePages = "./input files/page numbers for Value Level Tab (studyid = A1B2C3)_2018-02-05.csv")

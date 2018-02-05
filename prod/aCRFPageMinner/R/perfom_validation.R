@@ -4,9 +4,7 @@
 #'
 #' @param filename_manualPages The filename of the manually created (an MS Excel) file.
 #' @param tabsheet_manualPages The tabsheet of the manually created (an MS Excel) file.
-#' @param filename_machinePages The filename of the machine created (a CSV) file.
-#' @param compOut_dir The directory name for storing the comparison report.
-#'
+#' @param filename_machinePages The filename of the machine created (a CSV) file.#'
 #'
 #' @author Hailemichael M. Worku (aka, Haile). Email: <hailemichael.worku@ocs-consulting.com>
 #'
@@ -14,37 +12,59 @@
 
 
 perform_validation <- function(filename_manualPages = NULL, tabsheet_manualPages = NULL,
-                               filename_machinePages = NULL, 
-                               compOut_dir = NULL) {
+                               filename_machinePages = NULL) {
 
-  #########################################
-  ## Preprocess manually created file.   ##
-  #########################################
+  ###########################
+  ## Import input files.   ##
+  ###########################
+  
+  ## import manual file
   defOrig_fileName <- filename_manualPages
-  sheetVarTab_name <- tabsheet_manualPages
+  sheet_name <- tabsheet_manualPages
+  
+  defineOrigin_manual <- readxl::read_excel(path = file.path(defOrig_fileName), 
+                                            sheet = sheet_name, 
+                                            col_names = TRUE)
+  
+  ## import machine file
+  defineOrigin_machine <- readr::read_csv(file = filename_machinePages, col_names = T)
   
   
-  ## Read Define specs with page numbers populated manually
-  defineOrigin_variableTab_manual <- readxl::read_excel(path = file.path(defOrig_fileName), 
-                                                        sheet = sheetVarTab_name, 
-                                                        col_names = TRUE)
-  
-  defineOrigin_variableTab_manual_CRF <- defineOrigin_variableTab_manual %>% 
-    dplyr::filter(Origin %in% c("CRF")) %>% 
-    dplyr::select(Order, Dataset, Variable, Pages) 
-  
-  
-  #######################################
-  ## Preprocess machine created file   ##
-  #######################################
-  defineOrigin_variableTab_machine <- readr::read_csv(file = filename_machinePages, col_names = T)
-  
+  ####################################
+  ## Preprocess imported dataset.   ##
+  ####################################
+  if ( tabsheet_manualPages == "ValueLevel" ) {
+    ## -- filter manual page
+    defineOrigin_manual_CRF <- defineOrigin_manual %>% 
+      dplyr::filter(Origin %in% c("CRF")) %>% 
+      dplyr::select(Order, Dataset, Variable, "Where Clause", Pages) 
+    
+    ## remove space in column names
+    names(defineOrigin_manual_CRF) <- names(defineOrigin_manual_CRF) %>%
+      stringr::str_replace_all(pattern = "\\s+", replacement = "")
+    
+    ## -- filter machine file
+    defineOrigin_machine_final <- defineOrigin_machine %>%
+      dplyr::select(Order, Dataset, Variable, WhereClause, Pages)
+  } 
+  else {
+    ## filter manual page
+    defineOrigin_manual_CRF <- defineOrigin_manual %>% 
+      dplyr::filter(Origin %in% c("CRF")) %>% 
+      dplyr::select(Order, Dataset, Variable, Pages) 
+    
+    ## filter machine file
+    defineOrigin_machine_final <- defineOrigin_machine %>% 
+      dplyr::select(Order, Dataset, Variable, Pages)
+  }
   
   ################################################
   ## Compare manually created dataset against   ##
   ## machine created dataset.                   ##
   ################################################
-  res_comparison <- compareDF::compare_df(df_new = defineOrigin_variableTab_machine, df_old = defineOrigin_variableTab_manual_CRF, group_col = c("Pages"))
+  res_comparison <- compareDF::compare_df(df_new = defineOrigin_machine_final, 
+                                          df_old = defineOrigin_manual_CRF, 
+                                          group_col = c("Pages"))
   
   
   ##################################################
@@ -60,7 +80,10 @@ perform_validation <- function(filename_manualPages = NULL, tabsheet_manualPages
   out_comparison <- list(comp_df, chg_summary)
   
   ## export comparison report
-  filename_out <- file.path(paste(compOut_dir, "/comparison report_", Sys.Date(), ".txt", sep = ""))
+  compOut_dir <- stringr::str_extract(string = filename_manualPages, pattern = "\\.\\/(.*?)\\/")
+  studyid_out <- stringr::str_extract(string = filename_machinePages, pattern = "\\((.*?)\\)")
+  filename_out <- file.path(paste(compOut_dir, "comparison report for ", tabsheet_manualPages, " tab ", studyid_out, "_", Sys.Date(), ".txt", sep = ""))
+  
   cat(capture.output(print(out_comparison, row.names = FALSE), file=filename_out))
   
   print("")
